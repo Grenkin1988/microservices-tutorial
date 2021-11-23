@@ -1,0 +1,34 @@
+{
+	"info": {
+		"_postman_id": "b6c7ab99-eef2-4a94-a335-e672631afda3",
+		"name": ".NET Microservices – Full Course",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "PlatformService",
+			"item": [
+				{
+					"name": "Get All Platforms",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/Platforms",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"Platforms"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
