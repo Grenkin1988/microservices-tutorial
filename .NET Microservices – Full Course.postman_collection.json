@@ -31,10 +31,19 @@
 				{
 					"name": "Get Platform",
 					"request": {
-						"method": "GET",
+						"method": "POST",
 						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Dot Net 2\",\r\n    \"publisher\": \"Microsoft\",\r\n    \"cost\": \"Free\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
-							"raw": "https://localhost:5001/api/Platforms/1",
+							"raw": "https://localhost:5001/api/Platforms/",
 							"protocol": "https",
 							"host": [
 								"localhost"
@@ -43,8 +52,19 @@
 							"path": [
 								"api",
 								"Platforms",
-								"1"
+								""
 							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Platform",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": ""
 						}
 					},
 					"response": []
