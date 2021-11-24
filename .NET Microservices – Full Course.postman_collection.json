@@ -27,6 +27,27 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "Get Platform",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://localhost:5001/api/Platforms/1",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"Platforms",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		}
