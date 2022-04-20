@@ -29,7 +29,7 @@
 					"response": []
 				},
 				{
-					"name": "Get Platform",
+					"name": "Create Platform",
 					"request": {
 						"method": "POST",
 						"header": [],
@@ -59,12 +59,22 @@
 					"response": []
 				},
 				{
-					"name": "Create Platform",
+					"name": "Get Platform",
 					"request": {
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": ""
+							"raw": "https://localhost:5001/api/Platforms/2",
+							"protocol": "https",
+							"host": [
+								"localhost"
+							],
+							"port": "5001",
+							"path": [
+								"api",
+								"Platforms",
+								"2"
+							]
 						}
 					},
 					"response": []
