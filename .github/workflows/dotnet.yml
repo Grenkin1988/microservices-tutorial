@@ -1,0 +1,45 @@
+name: .NET
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  buildPlatformService:
+    name: Build PlatformService
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build ./PlatformService/PlatformService.csproj --no-restore
+    - name: Test
+      run: dotnet test ./PlatformService/PlatformService.csproj --no-build --verbosity normal
+  
+  buildCommandsService:
+    name: Build CommandsService
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build ./CommandsService/CommandsService.csproj --no-restore
+    - name: Test
+      run: dotnet test ./CommandsService/CommandsService.csproj --no-build --verbosity normal
+
