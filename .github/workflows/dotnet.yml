@@ -19,11 +19,14 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
+      working-directory: ./PlatformService
       run: dotnet restore
     - name: Build
-      run: dotnet build ./PlatformService/PlatformService.csproj --no-restore
+      working-directory: ./PlatformService
+      run: dotnet build --no-restore
     - name: Test
-      run: dotnet test ./PlatformService/PlatformService.csproj --no-build --verbosity normal
+      working-directory: ./PlatformService
+      run: dotnet test --no-build --verbosity normal
   
   buildCommandsService:
     name: Build CommandsService
@@ -37,9 +40,12 @@ jobs:
       with:
         dotnet-version: 5.0.x
     - name: Restore dependencies
+      working-directory: ./CommandsService
       run: dotnet restore
     - name: Build
-      run: dotnet build ./CommandsService/CommandsService.csproj --no-restore
+      working-directory: ./CommandsService
+      run: dotnet build --no-restore
     - name: Test
-      run: dotnet test ./CommandsService/CommandsService.csproj --no-build --verbosity normal
+      working-directory: ./CommandsService
+      run: dotnet test --no-build --verbosity normal
 
