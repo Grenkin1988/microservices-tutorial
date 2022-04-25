@@ -4,6 +4,10 @@
 
 ```
 dotnet run
+
+docker build -t grenkin/platformservice .
+
+docker push grenkin/platformservice
 ```
 
 ## K8S
@@ -16,4 +20,10 @@ dotnet run
 
 ```
 dotnet run
+
+docker build -t grenkin/commandservice .
+
+docker push grenkin/commandservice
+
+docker run -p 8080:80 grenkin/commandservice
 ```
