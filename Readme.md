@@ -24,6 +24,15 @@ kubectl get pods
 kubectl get services
 
 kubectl rollout restart deployment platforms-depl
+
+kubectl get namespace
+kubectl get pods --namespace=ingress-nginx
+
+kubectl get storageclass
+
+kubectl get pvc
+
+kubectl create secret generic mssql --from-literal=SA_PASSWORD="<password>"
 ```
 
 ## Commands Service
