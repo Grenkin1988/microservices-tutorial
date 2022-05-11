@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -19,17 +20,34 @@ namespace PlatformService
 {
     public class Startup
     {
-        public Startup(IConfiguration configuration)
-        {
-            Configuration = configuration;
-        }
+        private readonly IWebHostEnvironment _env;
 
         public IConfiguration Configuration { get; }
 
+        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+        {
+            Configuration = configuration;
+            _env = env;
+        }
+
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<AppDbContext>(opt =>
-                opt.UseInMemoryDatabase("InMemo"));
+            if(_env.IsProduction())
+            {
+                var conStrBuilder = new SqlConnectionStringBuilder(
+                    Configuration["Platforms:ConnectionString"]);
+                conStrBuilder.UserID = Configuration["Platforms:DbUserId"];
+                conStrBuilder.Password = Configuration["Platforms:DbPassword"];
+                System.Console.WriteLine("--> Using SqlServer Db");
+                services.AddDbContext<AppDbContext>(opt =>
+                    opt.UseSqlServer(conStrBuilder.ConnectionString));
+            }
+            else
+            {
+                System.Console.WriteLine("--> Using InMem Db");
+                services.AddDbContext<AppDbContext>(opt =>
+                    opt.UseInMemoryDatabase("InMemo"));
+            }
 
             services.AddScoped<IPlatformRepo, PlatformRepo>();
 
@@ -42,7 +60,7 @@ namespace PlatformService
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PlatformService", Version = "v1" });
             });
 
-            Console.WriteLine($"--> CommandSErvice Endpoint {Configuration["CommandService"]}");
+            Console.WriteLine($"--> CommandService Endpoint {Configuration["CommandService"]}");
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -65,7 +83,7 @@ namespace PlatformService
                 endpoints.MapControllers();
             });
 
-            PrepDb.PrepPopulation(app);
+            PrepDb.PrepPopulation(app, env.IsProduction());
         }
     }
 }

@@ -15,6 +15,14 @@ spec:
       containers:
         - name: platformservice
           image: grenkin/platformservice:latest
+          env:
+            - name: Platforms__DbUserId
+              value: sa
+            - name: Platforms__DbPassword
+              valueFrom:
+                secretKeyRef:
+                  name: mssql
+                  key: SA_PASSWORD
 ---
 apiVersion: v1
 kind: Service

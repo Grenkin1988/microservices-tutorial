@@ -8,6 +8,8 @@ dotnet run
 docker build -t grenkin/platformservice .
 
 docker push grenkin/platformservice
+
+dotnet ef migrations add initialmigration
 ```
 
 ## K8S
