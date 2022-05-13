@@ -15,6 +15,14 @@ spec:
       containers:
         - name: commandservice
           image: grenkin/commandservice:latest
+          env:
+            - name: Commands__DbUserId
+              value: sa
+            - name: Commands__DbPassword
+              valueFrom:
+                secretKeyRef:
+                  name: mssql
+                  key: SA_PASSWORD
 ---
 apiVersion: v1
 kind: Service
