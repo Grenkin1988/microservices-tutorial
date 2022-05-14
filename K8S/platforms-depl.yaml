@@ -37,3 +37,7 @@ spec:
     protocol: TCP
     port: 80
     targetPort: 80
+  - name: platformgrpc
+    protocol: TCP
+    port: 8282
+    targetPort: 8282
