@@ -1,7 +1,7 @@
 namespace PlatformService.Dtos
 {
     public record PlatformPublishedDto(
-        int Id, 
+        int Id,
         string Name,
         string Event = "");
 }

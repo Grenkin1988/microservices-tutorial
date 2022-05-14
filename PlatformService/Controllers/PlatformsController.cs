@@ -6,9 +6,7 @@ using PlatformService.Data;
 using PlatformService.Dtos;
 using PlatformService.Models;
 using PlatformService.SyncDataService.Http;
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace PlatformService.Controllers
 {
@@ -23,7 +21,7 @@ namespace PlatformService.Controllers
         private readonly ILogger<PlatformsController> _logger;
 
         public PlatformsController(
-            IPlatformRepo repository, 
+            IPlatformRepo repository,
             IMapper mapper,
             ICommandDataClient commandDataClient,
             IMessageBusClient messageBusClient,
@@ -49,13 +47,13 @@ namespace PlatformService.Controllers
         {
             var platformItem = _repository.GetPlatformById(id);
 
-            return platformItem is not null ? 
+            return platformItem is not null ?
                 Ok(_mapper.Map<PlatformReadDto>(platformItem))
                 : NotFound();
         }
 
         [HttpPost]
-        public async Task<ActionResult<PlatformReadDto>> CreatePlatform(PlatformCreateDto platformCreateDto)
+        public ActionResult<PlatformReadDto> CreatePlatform(PlatformCreateDto platformCreateDto)
         {
             var platform = _mapper.Map<Platform>(platformCreateDto);
             _repository.CreatePlatform(platform);
@@ -63,15 +61,6 @@ namespace PlatformService.Controllers
 
             var platformReadDto = _mapper.Map<PlatformReadDto>(platform);
             _logger.LogInformation("Platform created. {PlatformId}", platformReadDto.Id);
-            // try
-            // {
-            //     await _commandDataClient.SendPlatformToCommand(platformReadDto);
-            // }
-            // catch (Exception ex)
-            // {
-            //     Console.WriteLine($"--> Could not send syncronously: {ex.Message}");
-            // }
-            await Task.Delay(1);
 
             try
             {

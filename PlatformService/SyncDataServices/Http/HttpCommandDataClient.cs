@@ -29,7 +29,7 @@ namespace PlatformService.SyncDataService.Http
                 $"{_configuration["CommandService"]}",
                 httpContent);
 
-            if(response.IsSuccessStatusCode)
+            if (response.IsSuccessStatusCode)
             {
                 Console.WriteLine("--> Sync POST to CommandService was OK!");
             }
