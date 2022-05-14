@@ -30,14 +30,14 @@ namespace CommandsService.Controllers
         public ActionResult<IEnumerable<CommandReadDto>> GetCommandsForPlatform(int platformId)
         {
             _logger.LogInformation("Getting Commnads for Platform:{PlatformId}", platformId);
-            
-            if(!_repository.PlatformExists(platformId))
+
+            if (!_repository.PlatformExists(platformId))
             {
                 return NotFound();
             }
 
             var commandItems = _repository.GetCommandsFormPlatform(platformId);
-            
+
             return Ok(_mapper.Map<IEnumerable<CommandReadDto>>(commandItems));
         }
 
@@ -45,15 +45,15 @@ namespace CommandsService.Controllers
         public ActionResult<CommandReadDto> GetCommandForPlatform(int platformId, int commandId)
         {
             _logger.LogInformation("Getting Commnad[{CommandId}] for Platform:{PlatformId}", commandId, platformId);
-            
-            if(!_repository.PlatformExists(platformId))
+
+            if (!_repository.PlatformExists(platformId))
             {
                 return NotFound();
             }
 
             var commandItem = _repository.GetCommand(platformId, commandId);
-            
-            if(commandItem is null)
+
+            if (commandItem is null)
             {
                 return NotFound();
             }
@@ -66,7 +66,7 @@ namespace CommandsService.Controllers
         {
             _logger.LogInformation("Creating Command for Platform:{PlatformId}", platformId);
 
-            if(!_repository.PlatformExists(platformId))
+            if (!_repository.PlatformExists(platformId))
             {
                 return NotFound();
             }
@@ -78,7 +78,7 @@ namespace CommandsService.Controllers
             var commandReadDto = _mapper.Map<CommandReadDto>(command);
 
             var param = new
-            { 
+            {
                 platformId = commandReadDto.PlatformId,
                 commandId = commandReadDto.Id
             };
