@@ -8,7 +8,7 @@ using System.Text.Json;
 
 namespace PlatformService.AsyncDataServices
 {
-    public class MessageBusClient : IMessageBusClient
+    public class MessageBusClient : IMessageBusClient, IDisposable
     {
         private readonly IConfiguration _configuration;
         private readonly ILogger<MessageBusClient> _logger;
@@ -76,7 +76,7 @@ namespace PlatformService.AsyncDataServices
 
         public void Dispose()
         {            
-            _logger.LogDebug("NessageBus Disposed");
+            _logger.LogDebug("MessageBus Disposed");
             if(_channel.IsOpen)
             {
                 _channel.Close();
