@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CommandsService.Models
 {
-    public class Command 
+    public class Command
     {
         [Key]
         [Required]
@@ -16,7 +16,7 @@ namespace CommandsService.Models
 
         [Required]
         public int PlatformId { get; set; }
-        
+
         public Platform Platform { get; set; }
     }
 }

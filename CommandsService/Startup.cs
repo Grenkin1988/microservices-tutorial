@@ -27,7 +27,7 @@ namespace CommandsService
 
         public void ConfigureServices(IServiceCollection services)
         {
-            if(_env.IsProduction())
+            if (_env.IsProduction())
             {
                 var conStrBuilder = new SqlConnectionStringBuilder(
                     Configuration["Commands:ConnectionString"]);

@@ -14,7 +14,7 @@ namespace CommandsService.Controllers
         private readonly IMapper _mapper;
 
         public PlatformsController(
-            ICommandRepo repository, 
+            ICommandRepo repository,
             IMapper mapper)
         {
             _repository = repository;
@@ -25,7 +25,7 @@ namespace CommandsService.Controllers
         public ActionResult TestInboundConnection()
         {
             System.Console.WriteLine("---> Inbount POST # Command Service");
-            
+
             return Ok("Inbound test ok from Platforms Controller");
         }
 
@@ -33,9 +33,9 @@ namespace CommandsService.Controllers
         public ActionResult<IEnumerable<PlatformReadDto>> GetPlatforms()
         {
             System.Console.WriteLine("--> Getting Platforms from CommandsService");
-            
+
             var platformItems = _repository.GetAllPlatforms();
-            
+
             return Ok(_mapper.Map<IEnumerable<PlatformReadDto>>(platformItems));
         }
     }

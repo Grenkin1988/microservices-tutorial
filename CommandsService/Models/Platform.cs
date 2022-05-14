@@ -3,12 +3,12 @@ using System.ComponentModel.DataAnnotations;
 
 namespace CommandsService.Models
 {
-    public class Platform 
+    public class Platform
     {
         [Key]
         [Required]
         public int Id { get; set; }
-        
+
         [Required]
         public int ExternalId { get; set; }
 

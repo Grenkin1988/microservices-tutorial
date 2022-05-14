@@ -4,7 +4,6 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RabbitMQ.Client;
 using RabbitMQ.Client.Events;
-using System;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,7 +32,7 @@ namespace CommandsService.AsyncDataServices
             _logger = logger;
 
             _rabbitMQHost = _configuration["RabbitMQHost"];
-            _rabbitMQPort= int.Parse(_configuration["RabbitMQPort"]);
+            _rabbitMQPort = int.Parse(_configuration["RabbitMQPort"]);
             InitializeRabbitMQ();
         }
 
@@ -43,7 +42,7 @@ namespace CommandsService.AsyncDataServices
 
             var consumer = new EventingBasicConsumer(_channel);
 
-            consumer.Received += (ModuleHandle, ea) => 
+            consumer.Received += (ModuleHandle, ea) =>
             {
                 _logger.LogInformation("Event Received");
                 var body = ea.Body;
@@ -60,7 +59,7 @@ namespace CommandsService.AsyncDataServices
         public override void Dispose()
         {
             _logger.LogDebug("MessageBus Disposed");
-            if(_channel.IsOpen)
+            if (_channel.IsOpen)
             {
                 _channel.Close();
                 _connection.Close();

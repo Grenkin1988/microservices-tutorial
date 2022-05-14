@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CommandsService.Data
 {
-    public interface ICommandRepo 
+    public interface ICommandRepo
     {
         bool SaveChanges();
 
