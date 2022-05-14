@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using CommandsService.Models;
+using CommandsService.SyncDataServices;
+using System.Collections.Generic;
 
 namespace CommandsService.Data
 {
@@ -13,10 +15,20 @@ namespace CommandsService.Data
         {
             using var serviceScope = app.ApplicationServices.CreateScope();
 
-            SeedData(serviceScope.ServiceProvider.GetService<AppDbContext>(), isProd);
+            var grpcClient = serviceScope.ServiceProvider.GetRequiredService<IPlatformDataClient>();
+            var platforms = grpcClient.ReturnAllPlatforms();
+
+            SeedData(
+                serviceScope.ServiceProvider.GetService<AppDbContext>(),
+                serviceScope.ServiceProvider.GetService<ICommandRepo>(),
+                platforms, 
+                isProd);
         }
 
-        private static void SeedData(AppDbContext context, bool isProd)
+        private static void SeedData(AppDbContext context, 
+            ICommandRepo repo,
+            IEnumerable<Platform> platfroms,
+            bool isProd)
         {
             if (isProd)
             {
@@ -32,22 +44,16 @@ namespace CommandsService.Data
 
             }
 
-            // if (!context.Platforms.Any())
-            // {
-            //     Console.WriteLine("--> Seeding Data...");
+            var newPlatfroms = platfroms
+                .Where(pl => !repo.ExternalPlatformExist(pl.ExternalId))
+                .ToList();
+            if (newPlatfroms.Count != 0)
+            {
+                Console.WriteLine("--> Seeding new platforms...");
 
-            //     context.Platforms.AddRange(
-            //         new Platform() { Name = "Dot Net", Publisher = "Microsoft", Cost = "Free" },
-            //         new Platform() { Name = "SQL Server Express", Publisher = "Microsoft", Cost = "Free" },
-            //         new Platform() { Name = "Kubernetes", Publisher = "Cloud Native Computing Foundation", Cost = "Free" }
-            //     );
-
-            //     context.SaveChanges();
-            // }
-            // else
-            // {
-            //     Console.WriteLine("--> We already have data");
-            // }
+                newPlatfroms.ForEach(pl => repo.CreatePlatform(pl));
+                repo.SaveChanges();
+            }
         }
     }
 }

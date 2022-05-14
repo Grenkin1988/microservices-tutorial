@@ -6,6 +6,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Protobuf Include="Protos\platforms.proto" GrpcServices="Client" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="11.0.0" />
     <PackageReference Include="Google.Protobuf" Version="3.20.1" />
     <PackageReference Include="Grpc.Net.Client" Version="2.46.0" />
