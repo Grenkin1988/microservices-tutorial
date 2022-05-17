@@ -1,13 +1,12 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace PlatformService.Dtos
-{
-    public record PlatformCreateDto
-    (
-        [Required] string Name,
+namespace PlatformService.Dtos;
 
-        [Required] string Publisher,
+public record PlatformCreateDto
+(
+    [Required] string Name,
 
-        [Required] string Cost
-    );
-}
+    [Required] string Publisher,
+
+    [Required] string Cost
+);

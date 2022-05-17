@@ -1,9 +1,8 @@
 using PlatformService.Dtos;
 
-namespace PlatformService.AsyncDataServices
+namespace PlatformService.AsyncDataServices;
+
+public interface IMessageBusClient
 {
-    public interface IMessageBusClient 
-    {
-        void PublishNewPlatform(PlatformPublishedDto platformPublishedDto);
-    }
+    void PublishNewPlatform(PlatformPublishedDto platformPublishedDto);
 }

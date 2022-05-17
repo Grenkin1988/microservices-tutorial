@@ -1,8 +1,8 @@
-using System.Threading.Tasks;
 using AutoMapper;
 using Grpc.Core;
 using Microsoft.Extensions.Logging;
 using PlatformService.Data;
+using System.Threading.Tasks;
 
 namespace PlatformService.SyncDataService.Grpc
 {
@@ -13,7 +13,7 @@ namespace PlatformService.SyncDataService.Grpc
         private readonly ILogger<GrpcPlatformService> _logger;
 
         public GrpcPlatformService(IPlatformRepo repository,
-            IMapper mapper, 
+            IMapper mapper,
             ILogger<GrpcPlatformService> logger)
         {
             _repository = repository;
@@ -31,7 +31,7 @@ namespace PlatformService.SyncDataService.Grpc
             {
                 response.Platform.Add(_mapper.Map<GrpcPlatformModel>(platform));
             }
-            _logger.LogInformation("Get all Platforms from PlatformService sending {Count} platforms", 
+            _logger.LogInformation("Get all Platforms from PlatformService sending {Count} platforms",
                 response.Platform.Count);
             return Task.FromResult(response);
         }

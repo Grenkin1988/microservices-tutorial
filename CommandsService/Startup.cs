@@ -1,8 +1,7 @@
-using System;
 using CommandsService.AsyncDataServices;
 using CommandsService.Data;
 using CommandsService.EventProcessing;
-using CommandsService.SyncDataServices;
+using CommandsService.SyncDataServices.Grpc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Data.SqlClient;
@@ -11,73 +10,73 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
+using System;
 
-namespace CommandsService
+namespace CommandsService;
+
+public class Startup
 {
-    public class Startup
+    private readonly IWebHostEnvironment _env;
+
+    public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
-        private readonly IWebHostEnvironment _env;
+        Configuration = configuration;
+        _env = env;
+    }
 
-        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+    public IConfiguration Configuration { get; }
+
+    public void ConfigureServices(IServiceCollection services)
+    {
+        if (_env.IsProduction())
         {
-            Configuration = configuration;
-            _env = env;
+            var conStrBuilder = new SqlConnectionStringBuilder(
+                Configuration["Commands:ConnectionString"]);
+            conStrBuilder.UserID = Configuration["Commands:DbUserId"];
+            conStrBuilder.Password = Configuration["Commands:DbPassword"];
+            System.Console.WriteLine($"--> Using SqlServer Db - {conStrBuilder.InitialCatalog}");
+            services.AddDbContext<AppDbContext>(opt =>
+                opt.UseSqlServer(conStrBuilder.ConnectionString));
+        }
+        else
+        {
+            System.Console.WriteLine("--> Using InMem Db");
+            services.AddDbContext<AppDbContext>(opt =>
+                opt.UseInMemoryDatabase("InMemo"));
         }
 
-        public IConfiguration Configuration { get; }
+        services.AddScoped<ICommandRepo, CommandRepo>();
+        services.AddControllers();
 
-        public void ConfigureServices(IServiceCollection services)
+        services.AddHostedService<MessageBusSubscriber>();
+
+        services.AddSingleton<IEventProcessor, EventProcessor>();
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        services.AddScoped<IPlatformDataClient, PlatformDataClient>();
+        services.AddSwaggerGen(c =>
         {
-            if (_env.IsProduction())
-            {
-                var conStrBuilder = new SqlConnectionStringBuilder(
-                    Configuration["Commands:ConnectionString"]);
-                conStrBuilder.UserID = Configuration["Commands:DbUserId"];
-                conStrBuilder.Password = Configuration["Commands:DbPassword"];
-                System.Console.WriteLine($"--> Using SqlServer Db - {conStrBuilder.InitialCatalog}");
-                services.AddDbContext<AppDbContext>(opt =>
-                    opt.UseSqlServer(conStrBuilder.ConnectionString));
-            }
-            else
-            {
-                System.Console.WriteLine("--> Using InMem Db");
-                services.AddDbContext<AppDbContext>(opt =>
-                    opt.UseInMemoryDatabase("InMemo"));
-            }
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "CommandsService", Version = "v1" });
+        });
+    }
 
-            services.AddScoped<ICommandRepo, CommandRepo>();
-            services.AddControllers();
-
-            services.AddHostedService<MessageBusSubscriber>();
-
-            services.AddSingleton<IEventProcessor, EventProcessor>();
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddScoped<IPlatformDataClient, PlatformDataClient>();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CommandsService", Version = "v1" });
-            });
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CommandsService v1"));
         }
 
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        app.UseRouting();
+
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
         {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "CommandsService v1"));
-            }
+            endpoints.MapControllers();
+        });
 
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
-
-            PrepDb.PrepPopulation(app, env.IsProduction());
-        }
+        PrepDb.PrepPopulation(app, env.IsProduction());
     }
 }

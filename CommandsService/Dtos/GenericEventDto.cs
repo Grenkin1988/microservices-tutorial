@@ -1,4 +1,3 @@
-namespace CommandsService.Dtos
-{
-    public record GenericEventDto(string Event);
-}
+namespace CommandsService.Dtos;
+
+public record GenericEventDto(string Event);

@@ -1,5 +1,3 @@
-using System;
-using System.IO;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -12,80 +10,80 @@ using Microsoft.OpenApi.Models;
 using PlatformService.AsyncDataServices;
 using PlatformService.Data;
 using PlatformService.SyncDataService.Grpc;
-using PlatformService.SyncDataService.Http;
+using System;
+using System.IO;
 
-namespace PlatformService
+namespace PlatformService;
+
+public class Startup
 {
-    public class Startup
+    private readonly IWebHostEnvironment _env;
+
+    public IConfiguration Configuration { get; }
+
+    public Startup(IConfiguration configuration, IWebHostEnvironment env)
     {
-        private readonly IWebHostEnvironment _env;
+        Configuration = configuration;
+        _env = env;
+    }
 
-        public IConfiguration Configuration { get; }
-
-        public Startup(IConfiguration configuration, IWebHostEnvironment env)
+    public void ConfigureServices(IServiceCollection services)
+    {
+        if (_env.IsProduction())
         {
-            Configuration = configuration;
-            _env = env;
+            var conStrBuilder = new SqlConnectionStringBuilder(
+                Configuration["Platforms:ConnectionString"]);
+            conStrBuilder.UserID = Configuration["Platforms:DbUserId"];
+            conStrBuilder.Password = Configuration["Platforms:DbPassword"];
+            System.Console.WriteLine("--> Using SqlServer Db");
+            services.AddDbContext<AppDbContext>(opt =>
+                opt.UseSqlServer(conStrBuilder.ConnectionString));
+        }
+        else
+        {
+            System.Console.WriteLine("--> Using InMem Db");
+            services.AddDbContext<AppDbContext>(opt =>
+                opt.UseInMemoryDatabase("InMemo"));
         }
 
-        public void ConfigureServices(IServiceCollection services)
+        services.AddScoped<IPlatformRepo, PlatformRepo>();
+
+        services.AddSingleton<IMessageBusClient, MessageBusClient>();
+        services.AddGrpc();
+        services.AddControllers();
+        services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+        services.AddSwaggerGen(c =>
         {
-            if (_env.IsProduction())
-            {
-                var conStrBuilder = new SqlConnectionStringBuilder(
-                    Configuration["Platforms:ConnectionString"]);
-                conStrBuilder.UserID = Configuration["Platforms:DbUserId"];
-                conStrBuilder.Password = Configuration["Platforms:DbPassword"];
-                System.Console.WriteLine("--> Using SqlServer Db");
-                services.AddDbContext<AppDbContext>(opt =>
-                    opt.UseSqlServer(conStrBuilder.ConnectionString));
-            }
-            else
-            {
-                System.Console.WriteLine("--> Using InMem Db");
-                services.AddDbContext<AppDbContext>(opt =>
-                    opt.UseInMemoryDatabase("InMemo"));
-            }
+            c.SwaggerDoc("v1", new OpenApiInfo { Title = "PlatformService", Version = "v1" });
+        });
 
-            services.AddScoped<IPlatformRepo, PlatformRepo>();
+        Console.WriteLine($"--> CommandService Endpoint {Configuration["CommandService"]}");
+    }
 
-            services.AddHttpClient<ICommandDataClient, HttpCommandDataClient>();
-            services.AddSingleton<IMessageBusClient, MessageBusClient>();
-            services.AddGrpc();
-            services.AddControllers();
-            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-            services.AddSwaggerGen(c =>
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    {
+        if (env.IsDevelopment())
+        {
+            app.UseDeveloperExceptionPage();
+            app.UseSwagger();
+            app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PlatformService v1"));
+        }
+
+        app.UseRouting();
+
+        app.UseAuthorization();
+
+        app.UseEndpoints(endpoints =>
+        {
+            endpoints.MapControllers();
+            endpoints.MapGrpcService<GrpcPlatformService>();
+
+            endpoints.MapGet("/protos/platforms.proto", async context =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "PlatformService", Version = "v1" });
+                await context.Response.WriteAsync(File.ReadAllText("Protos/platforms.proto"));
             });
+        });
 
-            Console.WriteLine($"--> CommandService Endpoint {Configuration["CommandService"]}");
-        }
-
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
-        {
-            if (env.IsDevelopment())
-            {
-                app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PlatformService v1"));
-            }
-
-            app.UseRouting();
-
-            app.UseAuthorization();
-
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-                endpoints.MapGrpcService<GrpcPlatformService>();
-
-                endpoints.MapGet("/protos/platforms.proto", async context => {
-                    await context.Response.WriteAsync(File.ReadAllText("Protos/platforms.proto"));
-                });
-            });
-
-            PrepDb.PrepPopulation(app, env.IsProduction());
-        }
+        PrepDb.PrepPopulation(app, env.IsProduction());
     }
 }

@@ -1,19 +1,18 @@
 using CommandsService.Models;
 using System.Collections.Generic;
 
-namespace CommandsService.Data
+namespace CommandsService.Data;
+
+public interface ICommandRepo
 {
-    public interface ICommandRepo
-    {
-        bool SaveChanges();
+    bool SaveChanges();
 
-        IEnumerable<Platform> GetAllPlatforms();
-        void CreatePlatform(Platform platform);
-        bool PlatformExists(int platformId);
-        bool ExternalPlatformExist(int externalPlatformId);
+    IEnumerable<Platform> GetAllPlatforms();
+    void CreatePlatform(Platform platform);
+    bool PlatformExists(int platformId);
+    bool ExternalPlatformExist(int externalPlatformId);
 
-        IEnumerable<Command> GetCommandsFormPlatform(int platformId);
-        Command GetCommand(int platformId, int commandId);
-        void CreateCommand(int platformId, Command command);
-    }
+    IEnumerable<Command> GetCommandsFormPlatform(int platformId);
+    Command GetCommand(int platformId, int commandId);
+    void CreateCommand(int platformId, Command command);
 }

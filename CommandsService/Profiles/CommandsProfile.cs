@@ -3,24 +3,23 @@ using CommandsService.Dtos;
 using CommandsService.Models;
 using PlatformService;
 
-namespace CommandsService.Profiles
+namespace CommandsService.Profiles;
+
+public class CommandsProfile : Profile
 {
-    public class CommandsProfile : Profile
+    public CommandsProfile()
     {
-        public CommandsProfile()
-        {
-            // Source -> Target
-            CreateMap<Platform, PlatformReadDto>();
-            CreateMap<Command, CommandReadDto>();
-            CreateMap<CommandCreateDto, Command>();
-            CreateMap<PlatformPublishedDto, Platform>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.Id));
-            CreateMap<GrpcPlatformModel, Platform>()
-                .ForMember(dest => dest.Id, opt => opt.Ignore())
-                .ForMember(dest => dest.Commands, opt => opt.Ignore())
-                .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.PlatformId))
-                .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
-        }
+        // Source -> Target
+        CreateMap<Platform, PlatformReadDto>();
+        CreateMap<Command, CommandReadDto>();
+        CreateMap<CommandCreateDto, Command>();
+        CreateMap<PlatformPublishedDto, Platform>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.Id));
+        CreateMap<GrpcPlatformModel, Platform>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.Commands, opt => opt.Ignore())
+            .ForMember(dest => dest.ExternalId, opt => opt.MapFrom(src => src.PlatformId))
+            .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name));
     }
 }
