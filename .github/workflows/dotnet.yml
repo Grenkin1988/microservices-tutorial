@@ -11,8 +11,14 @@ jobs:
   buildPlatformService:
     name: Build PlatformService
     runs-on: ubuntu-latest
-    
+    defaults:
+      run:
+        working-directory: ./CommandsService
+
     steps:
+      -
+        name: Checkout
+        uses: actions/checkout@v2
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -26,11 +32,22 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
+        name: Build and export to Docker
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          load: true
+          tags: ${{ env.TEST_TAG }}
+      -
+        name: Test
+        run: |
+          docker run --rm ${{ env.TEST_TAG }}
+      -
         name: Build and push
         uses: docker/build-push-action@v3
         with:
+          context: .
           push: true
-          file: PlatformService/Dockerfile
           tags: grenkin/platformservice:latest
   
   buildCommandsService:
