@@ -1,0 +1,66 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.32413.511
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00_Solution", "00_Solution", "{CA9ADA96-9843-4B33-BBC3-7481FAC29179}"
+	ProjectSection(SolutionItems) = preProject
+		.gitignore = .gitignore
+		.NET Microservices – Full Course.postman_collection.json = .NET Microservices – Full Course.postman_collection.json
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{515D6F9A-0551-4193-8E82-71633AF6FFB6}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{DDFF1327-48D2-4B2B-9997-5135515F7B94}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01_K8S", "01_K8S", "{65A4954F-A80A-4F63-BE3E-758401FE3EE5}"
+	ProjectSection(SolutionItems) = preProject
+		K8S\commands-depl.yaml = K8S\commands-depl.yaml
+		K8S\ingress-srv.yaml = K8S\ingress-srv.yaml
+		K8S\local-pvc.yaml = K8S\local-pvc.yaml
+		K8S\mssql-plat-depl.yaml = K8S\mssql-plat-depl.yaml
+		K8S\platforms-depl.yaml = K8S\platforms-depl.yaml
+		K8S\platforms-np-srv.yaml = K8S\platforms-np-srv.yaml
+		K8S\rabbitmq-depl.yaml = K8S\rabbitmq-depl.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02_PlatformService", "02_PlatformService", "{C489625E-51A0-4A6D-847E-8420EDB8B6B4}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03_CommandsService", "03_CommandsService", "{4DF8DC21-72A5-43DB-B4EE-EA7527284A7B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PlatformService", "PlatformService\PlatformService.csproj", "{C893A314-CFD8-4A28-B766-EA7D75FD053E}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CommandsService", "CommandsService\CommandsService.csproj", "{A3F2497D-3023-40F9-B39B-3A47713BE986}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C893A314-CFD8-4A28-B766-EA7D75FD053E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C893A314-CFD8-4A28-B766-EA7D75FD053E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C893A314-CFD8-4A28-B766-EA7D75FD053E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C893A314-CFD8-4A28-B766-EA7D75FD053E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3F2497D-3023-40F9-B39B-3A47713BE986}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3F2497D-3023-40F9-B39B-3A47713BE986}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3F2497D-3023-40F9-B39B-3A47713BE986}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3F2497D-3023-40F9-B39B-3A47713BE986}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{515D6F9A-0551-4193-8E82-71633AF6FFB6} = {CA9ADA96-9843-4B33-BBC3-7481FAC29179}
+		{DDFF1327-48D2-4B2B-9997-5135515F7B94} = {515D6F9A-0551-4193-8E82-71633AF6FFB6}
+		{C893A314-CFD8-4A28-B766-EA7D75FD053E} = {C489625E-51A0-4A6D-847E-8420EDB8B6B4}
+		{A3F2497D-3023-40F9-B39B-3A47713BE986} = {4DF8DC21-72A5-43DB-B4EE-EA7527284A7B}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9184A8E0-32AF-4F80-9C47-EB493A49693D}
+	EndGlobalSection
+EndGlobal
