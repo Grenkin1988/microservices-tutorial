@@ -37,17 +37,19 @@ jobs:
         with:
           context: .
           load: true
-          tags: ${{ env.TEST_TAG }}
+          file: PlatformService/Dockerfile
+          tags: grenkin/platformservice:test
       -
         name: Test
         run: |
-          docker run --rm ${{ env.TEST_TAG }}
+          docker run --rm grenkin/platformservice:test
       -
         name: Build and push
         uses: docker/build-push-action@v3
         with:
           context: .
           push: true
+          file: PlatformService/Dockerfile
           tags: grenkin/platformservice:latest
   
   buildCommandsService:
