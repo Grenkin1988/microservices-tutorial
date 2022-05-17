@@ -1,4 +1,4 @@
-name: .NET
+name: Docker Image CI
 
 on:
   push:
@@ -7,44 +7,24 @@ on:
     branches: [ master ]
 
 jobs:
+
   buildPlatformService:
     name: Build PlatformService
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 6.0.x
-    - name: Restore dependencies
+    - name: Build the Docker image
       working-directory: ./PlatformService
-      run: dotnet restore
-    - name: Build
-      working-directory: ./PlatformService
-      run: dotnet build --no-restore
-    - name: Test
-      working-directory: ./PlatformService
-      run: dotnet test --no-build --verbosity normal
+      run: docker build . --file Dockerfile --tag grenkin/platformservice
   
   buildCommandsService:
     name: Build CommandsService
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v3
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v2
-      with:
-        dotnet-version: 6.0.x
-    - name: Restore dependencies
+    - name: Build the Docker image
       working-directory: ./CommandsService
-      run: dotnet restore
-    - name: Build
-      working-directory: ./CommandsService
-      run: dotnet build --no-restore
-    - name: Test
-      working-directory: ./CommandsService
-      run: dotnet test --no-build --verbosity normal
+      run: docker build . --file Dockerfile --tag grenkin/commandservice
+
