@@ -2,6 +2,7 @@ using AutoMapper;
 using CommandsService.Data;
 using CommandsService.Dtos;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
 
 namespace CommandsService.Controllers;
@@ -12,27 +13,22 @@ public class PlatformsController : ControllerBase
 {
     private readonly ICommandRepo _repository;
     private readonly IMapper _mapper;
+    private readonly ILogger<PlatformsController> _logger;
 
     public PlatformsController(
         ICommandRepo repository,
-        IMapper mapper)
+        IMapper mapper,
+        ILogger<PlatformsController> logger)
     {
         _repository = repository;
         _mapper = mapper;
-    }
-
-    [HttpPost]
-    public ActionResult TestInboundConnection()
-    {
-        System.Console.WriteLine("---> Inbount POST # Command Service");
-
-        return Ok("Inbound test ok from Platforms Controller");
+        _logger = logger;
     }
 
     [HttpGet]
     public ActionResult<IEnumerable<PlatformReadDto>> GetPlatforms()
     {
-        System.Console.WriteLine("--> Getting Platforms from CommandsService");
+        _logger.LogInformation("Getting Platforms from CommandsService");
 
         var platformItems = _repository.GetAllPlatforms();
 

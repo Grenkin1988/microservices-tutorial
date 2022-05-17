@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using PlatformService.AsyncDataServices;
 using PlatformService.Data;
@@ -35,13 +36,11 @@ public class Startup
                 Configuration["Platforms:ConnectionString"]);
             conStrBuilder.UserID = Configuration["Platforms:DbUserId"];
             conStrBuilder.Password = Configuration["Platforms:DbPassword"];
-            System.Console.WriteLine("--> Using SqlServer Db");
             services.AddDbContext<AppDbContext>(opt =>
                 opt.UseSqlServer(conStrBuilder.ConnectionString));
         }
         else
         {
-            System.Console.WriteLine("--> Using InMem Db");
             services.AddDbContext<AppDbContext>(opt =>
                 opt.UseInMemoryDatabase("InMemo"));
         }
@@ -56,11 +55,9 @@ public class Startup
         {
             c.SwaggerDoc("v1", new OpenApiInfo { Title = "PlatformService", Version = "v1" });
         });
-
-        Console.WriteLine($"--> CommandService Endpoint {Configuration["CommandService"]}");
     }
 
-    public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+    public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILogger<Startup> logger)
     {
         if (env.IsDevelopment())
         {
@@ -83,6 +80,8 @@ public class Startup
                 await context.Response.WriteAsync(File.ReadAllText("Protos/platforms.proto"));
             });
         });
+
+        logger.LogInformation("CommandService Endpoint {CommandServiceEndpoint}", Configuration["CommandService"]);
 
         PrepDb.PrepPopulation(app, env.IsProduction());
     }

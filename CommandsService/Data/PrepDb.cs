@@ -3,6 +3,7 @@ using CommandsService.SyncDataServices.Grpc;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,38 +22,41 @@ public static class PrepDb
         SeedData(
             serviceScope.ServiceProvider.GetService<AppDbContext>(),
             serviceScope.ServiceProvider.GetService<ICommandRepo>(),
+            serviceScope.ServiceProvider.GetService<ILogger<Startup>>(),
             platforms,
             isProd);
     }
 
     private static void SeedData(AppDbContext context,
         ICommandRepo repo,
+        ILogger logger,
         IEnumerable<Platform> platfroms,
         bool isProd)
     {
         if (isProd)
         {
-            Console.WriteLine("--> Attempting to apply migrations...");
+            logger.LogInformation("Attempting to apply migrations...");
             try
             {
                 context.Database.Migrate();
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"--> Could not run migrations: {ex.Message}");
+                logger.LogError(ex, "Could not run migrations");
             }
 
         }
 
-        var newPlatfroms = platfroms
+        var newPlatforms = platfroms
             .Where(pl => !repo.ExternalPlatformExist(pl.ExternalId))
             .ToList();
-        if (newPlatfroms.Count != 0)
+        if (newPlatforms.Count != 0)
         {
-            Console.WriteLine("--> Seeding new platforms...");
+            logger.LogInformation("Seeding new platforms...");
 
-            newPlatfroms.ForEach(pl => repo.CreatePlatform(pl));
+            newPlatforms.ForEach(pl => repo.CreatePlatform(pl));
             repo.SaveChanges();
+            logger.LogInformation("Added {Count} Platforms", newPlatforms.Count);
         }
     }
 }

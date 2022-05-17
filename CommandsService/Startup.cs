@@ -34,13 +34,11 @@ public class Startup
                 Configuration["Commands:ConnectionString"]);
             conStrBuilder.UserID = Configuration["Commands:DbUserId"];
             conStrBuilder.Password = Configuration["Commands:DbPassword"];
-            System.Console.WriteLine($"--> Using SqlServer Db - {conStrBuilder.InitialCatalog}");
             services.AddDbContext<AppDbContext>(opt =>
                 opt.UseSqlServer(conStrBuilder.ConnectionString));
         }
         else
         {
-            System.Console.WriteLine("--> Using InMem Db");
             services.AddDbContext<AppDbContext>(opt =>
                 opt.UseInMemoryDatabase("InMemo"));
         }
